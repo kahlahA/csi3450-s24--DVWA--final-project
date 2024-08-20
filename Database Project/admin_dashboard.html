@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <form action="add_product.php" method="POST">
+        <label for="manufacturer">Manufacturer:</label>
+        <input type="text" id="manufacturer" name="manufacturer" required><br><br>
+
+        <label for="brand">Brand:</label>
+        <input type="text" id="brand" name="brand" required><br><br>
+
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="model" required><br><br>
+
+        <label for="jets">Number of Jets:</label>
+        <input type="number" id="jets" name="jets" required><br><br>
+
+        <label for="motors">Number of Motors:</label>
+        <input type="number" id="motors" name="motors" required><br><br>
+
+        <label for="horsepower">Horsepower per Motor:</label>
+        <input type="number" step="0.1" id="horsepower" name="horsepower" required><br><br>
+
+        <label for="price">Suggested Retail Price:</label>
+        <input type="number" id="price" name="price" required><br><br>
+
+        <label for="weight">Dry Weight:</label>
+        <input type="number" id="weight" name="weight" required><br><br>
+
+        <label for="capacity">Water Capacity:</label>
+        <input type="number" id="capacity" name="capacity" required><br><br>
+
+        <label for="seating">Seating Capacity:</label>
+        <input type="number" id="seating" name="seating" required><br><br>
+
+        <input type="submit" value="Add Product">
+    </form>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Filter Spas</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Find the Spa for YOU!</h1>
+    <button id="loginButton">Admin Login</button>
+    <form id="filterForm">
+        <label for="manufacturer">Manufacturer:</label>
+        <select id="manufacturer" name="manufacturer">
+            <option value="">All Manufacturers</option>
+            <!-- Options to be populated dynamically from the database -->
+        </select><br><br>
+
+        <label for="brand">Brand:</label>
+        <select id="brand" name="brand">
+            <option value="">All Brands</option>
+            <!-- Options to be populated dynamically based on selected manufacturer -->
+        </select><br><br>
+
+        <label for="model">Model:</label>
+        <select id="model" name="model">
+            <option value="">All Models</option>
+            <!-- Options to be populated dynamically based on selected brand -->
+        </select><br><br>
+
+        <label for="jets">Number of Jets:</label>
+        <input type="number" id="jets" name="jets" min="0"><br><br>
+
+        <label for="motors">Number of Motors:</label>
+        <input type="number" id="motors" name="motors" min="0"><br><br>
+
+        <label for="horsepower">Horsepower per Motor:</label>
+        <input type="number" step="0.1" id="horsepower" name="horsepower" min="0"><br><br>
+
+        <label for="price">Maximum Price:</label>
+        <input type="number" id="price" name="price" min="0"><br><br>
+
+        <label for="weight">Maximum Dry Weight:</label>
+        <input type="number" id="weight" name="weight" min="0"><br><br>
+
+        <label for="capacity">Water Capacity:</label>
+        <input type="number" id="capacity" name="capacity" min="0"><br><br>
+
+        <label for="seating">Seating Capacity:</label>
+        <input type="number" id="seating" name="seating" min="0"><br><br>
+
+        <button type="button" id="selectAll">Select All</button><br><br>
+
+        <input type="submit" value="Filter Results">
+    </form>
+
+    <div id="results">
+        <!-- Filtered results will be displayed here -->
+    </div>
+
+    <script>
+        // Function to select "All" for every dropdown and clear input fields
+        document.getElementById('selectAll').addEventListener('click', function() {
+            document.getElementById('manufacturer').value = "";
+            document.getElementById('brand').value = "";
+            document.getElementById('model').value = "";
+            document.getElementById('jets').value = "";
+            document.getElementById('motors').value = "";
+            document.getElementById('horsepower').value = "";
+            document.getElementById('price').value = "";
+            document.getElementById('weight').value = "";
+            document.getElementById('capacity').value = "";
+            document.getElementById('seating').value = "";
+        });
+
+        // Fetch options for manufacturer, brand, and model dynamically
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('fetch_options.php?type=manufacturer')
+                .then(response => response.json())
+                .then(data => {
+                    const manufacturerSelect = document.getElementById('manufacturer');
+                    data.forEach(manufacturer => {
+                        const option = document.createElement('option');
+                        option.value = manufacturer.manufacturer_code;
+                        option.text = manufacturer.company_name;
+                        manufacturerSelect.appendChild(option);
+                    });
+                });
+
+            document.getElementById('manufacturer').addEventListener('change', function() {
+                const manufacturerCode = this.value;
+                fetch(`fetch_options.php?type=brand&manufacturer_code=${manufacturerCode}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const brandSelect = document.getElementById('brand');
+                        brandSelect.innerHTML = '<option value="">All Brands</option>';
+                        data.forEach(brand => {
+                            const option = document.createElement('option');
+                            option.value = brand.brand_id;
+                            option.text = brand.brand_name;
+                            brandSelect.appendChild(option);
+                        });
+                    });
+            });
+
+            document.getElementById('brand').addEventListener('change', function() {
+                const brandId = this.value;
+                fetch(`fetch_options.php?type=model&brand_id=${brandId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const modelSelect = document.getElementById('model');
+                        modelSelect.innerHTML = '<option value="">All Models</option>';
+                        data.forEach(model => {
+                            const option = document.createElement('option');
+                            option.value = model.model_id;
+                            option.text = model.model_number;
+                            modelSelect.appendChild(option);
+                        });
+                    });
+            });
+        });
+
+        // Handle form submission using AJAX
+        $('#filterForm').on('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            $.ajax({
+                url: 'process_form.php',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(data) {
+                    $('#results').html(data);
+                }
+            });
+        });
+
+        // Navigate to login.html when the login button is clicked
+        document.getElementById('loginButton').addEventListener('click', function() {
+            window.location.href = 'login.html';
+        });
+
+    </script>
+</body>
+</html>
